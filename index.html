@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Surprise — Happy Birthday</title>
+<style>
+:root{
+  --pink:#ff77b2; --light:#fff6fb; --deep:#ff4d94; --muted:#ffd8ea;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background:linear-gradient(135deg,var(--light),#ffeef9);
+  color:#222;
+}
+
+/* CARD */
+.card{
+  width:min(980px,95vw);
+  margin:20px auto;
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 16px 40px rgba(255,77,148,0.12);
+}
+
+/* header */
+header{display:flex;align-items:center;gap:12px}
+.logo{width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,var(--deep),var(--pink));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
+h1{margin:0;font-size:22px;color:var(--deep)}
+.lead{font-size:13px;color:#7b405b;margin-top:6px}
+
+/* layout */
+.stage{display:flex;gap:20px;margin-top:14px}
+@media(max-width:900px){.stage{flex-direction:column}}
+
+/* text */
+.sentences{font-size:16px;line-height:1.55;color:#4d2c3d}
+.sentences .float{display:inline-block;animation:floatText 4s ease-in-out infinite}
+@keyframes floatText{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* carousel */
+.carousel{flex:1;background:linear-gradient(180deg,var(--muted),#fff);border-radius:14px;padding:12px;text-align:center}
+.img-wrap{width:100%;max-width:420px;height:420px;margin:auto;border-radius:14px;background:#fff;position:relative;cursor:pointer;overflow:hidden;transform-style:preserve-3d;transition:.45s}
+.img-front,.img-back{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  object-fit:cover;border-radius:14px;
+  backface-visibility:hidden;
+  transition:.45s;
+}
+.img-back{transform:rotateY(180deg);opacity:0}
+.img-wrap.flipped .img-front{transform:rotateY(180deg);opacity:0}
+.img-wrap.flipped .img-back{transform:rotateY(0);opacity:1}
+
+/* buttons */
+.btn{
+  padding:10px 14px;
+  font-weight:700;
+  border-radius:10px;
+  border:2px solid var(--pink);
+  background:#fff;
+  color:var(--deep);
+  cursor:pointer;
+  margin-top:10px;
+}
+
+/* footer */
+footer{text-align:center;margin-top:16px;color:#8a4a6a}
+
+/* CONFETTI */
+.confetti-container{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999}
+
+/* modal */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,0.45);
+  display:none;align-items:center;justify-content:center;
+  z-index:10000;
+}
+.modal{
+  background:#fff;padding:20px;border-radius:14px;
+  max-width:92vw;width:400px;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.18);
+  position:relative;
+}
+.modal h2{margin:0 0 8px;font-size:20px;color:var(--deep)}
+.modal p{color:#5b2b44}
+.close{
+  position:absolute;right:12px;top:10px;
+  background:transparent;border:none;font-size:20px;cursor:pointer;
+}
+
+/* typewriter effect */
+.typewriter{
+  font-weight:700;
+  color:var(--deep);
+  min-height:36px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <header>
+    <div class="logo">♥︎</div>
+    <div>
+      <h1>Surprise! A Birthday Wish</h1>
+      <div class="lead">For My Love And My World - ❤️Gayathri❤️</div>
+    </div>
+  </header>
+
+  <div class="stage">
+
+    <!-- TEXT -->
+    <div style="flex:1; margin-top: 150px;">
+      <div class="sentences">
+        <div class="float">Five years, and my heart still chooses you every single day —</div>
+        <p style="margin-top:10px">
+          In you, I found my safest place, my happiest moments, and the kind of love people spend lifetimes searching for.
+          Happy Birthday, my love ❤️
+        </p>
+
+        <!-- SURPRISE BUTTON ONLY -->
+        <button id="justSurprise" class="btn">Tap for Special Note 🤗</button>
+      </div>
+    </div>
+
+    <!-- CAROUSEL -->
+    <div style="width:420px;max-width:42vw;">
+      <div class="carousel">
+        <div id="carouselCenter" class="img-wrap"></div>
+        <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+          <button id="prev" class="btn">◀ Prev</button>
+          <button id="next" class="btn">Next ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>❤ — Love you My Dear!</footer>
+</div>
+
+<!-- confetti -->
+<div id="confetti" class="confetti-container"></div>
+
+<!-- modal -->
+<div id="modal" class="modal-backdrop">
+  <div class="modal">
+    <button id="modalClose" class="close">✕</button>
+    <h2>A Special Message For You</h2>
+    <div id="typeText" class="typewriter"></div>
+    <p>You are the reason I smile every day. Happy Birthday, my love ❤️</p>
+  </div>
+</div>
+
+<script>
+/* ----- Carousel ----- */
+const items=[
+  {front:'img1.1.jpg',back:'img7.jpg'},
+  {front:'img2.jpg',back:'img9.jpg'},
+  {front:'img3.jpg',back:'img5.jpg'},
+  {front:'img4.jpg',back:'img11.jpg'},
+  {front:'img6.jpg',back:'img10.jpg'},
+];
+let index=0, flipped=false;
+const box=document.getElementById('carouselCenter');
+
+function loadSlide(){
+  box.innerHTML = `
+    <img src="${items[index].front}" class="img-front">
+    <img src="${items[index].back}" class="img-back">
+  `;
+  box.classList.toggle("flipped", flipped);
+}
+loadSlide();
+
+document.getElementById('prev').onclick=()=>{ index=(index-1+items.length)%items.length; flipped=false; loadSlide(); }
+document.getElementById('next').onclick=()=>{ index=(index+1)%items.length; flipped=false; loadSlide(); }
+box.onclick=()=>{ flipped=!flipped; box.classList.toggle("flipped",flipped); };
+
+/* ----- Confetti ----- */
+const confettiContainer = document.getElementById('confetti');
+function fireConfetti(pieces=60){
+  const colors=['#ff77b2','#ffb3d6','#ffd8ea','#ff4d94','#fff176','#80deea'];
+  for(let i=0;i<pieces;i++){
+    const el=document.createElement('div');
+    const w=8+Math.random()*12;
+    el.style.position='absolute';
+    el.style.width=w+'px';
+    el.style.height=(w*0.6)+'px';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.left=(30+Math.random()*40)+'%';
+    el.style.top='30%';
+    el.style.opacity=1;
+    confettiContainer.appendChild(el);
+    const dx=(Math.random()-0.5)*120;
+    const dy=-(200+Math.random()*400);
+    const rot=(Math.random()-0.5)*720;
+    el.animate([
+      {transform:`translate(0,0) rotate(0deg)`,opacity:1},
+      {transform:`translate(${dx}px,${dy}px) rotate(${rot}deg)`,opacity:1},
+      {transform:`translate(${dx*1.6}px,${dy*-1.2}px) rotate(${rot*1.3}deg)`,opacity:0}
+    ],{
+      duration:2000+Math.random()*1600,
+      easing:'cubic-bezier(.2,.7,.2,1)'
+    }).onfinish=()=>el.remove();
+  }
+}
+
+/* ----- Modal + Typewriter ----- */
+const modal=document.getElementById('modal');
+const typeEl=document.getElementById('typeText');
+document.getElementById('modalClose').onclick=()=>modal.style.display='none';
+
+function openModalWithType(text){
+  modal.style.display='flex';
+  typeEl.textContent='';
+  let i=0;
+  const speed=38;
+  function type(){
+    if(i<=text.length){
+      typeEl.textContent=text.slice(0,i);
+      i++;
+      setTimeout(type,speed);
+    }
+  }
+  type();
+}
+
+/* SURPRISE BUTTON */
+document.getElementById('justSurprise').onclick=()=>{
+  fireConfetti(70);
+  openModalWithType("Happy Birthday Gayathri! You are my world, my joy, and my forever. ❤️");
+};
+</script>
+
+</body>
+</html>
